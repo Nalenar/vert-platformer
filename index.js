@@ -22,7 +22,8 @@ const background = new Sprite({
 });
 
 const player = new Player({
-  position: { x: 200, y: 100 },
+  position: { x: 100, y: 100 },
+  floorCollisionBlocks,
 });
 
 const keys = {
@@ -49,10 +50,10 @@ function animate() {
   platformCollisionBlocks.forEach((collisionBlock) => {
     collisionBlock.update();
   });
-  c.restore();
 
   player.update();
 
+  c.restore();
   player.velocity.x = 0;
   if (keys.a.pressed && player.lastKey === "a") {
     player.velocity.x = -4;
