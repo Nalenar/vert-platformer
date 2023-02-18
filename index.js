@@ -24,6 +24,8 @@ const background = new Sprite({
 const player = new Player({
   position: { x: 100, y: 100 },
   floorCollisionBlocks,
+  imageSrc: "assets/warrior/Idle.png",
+  frameRate: 8,
 });
 
 const keys = {
