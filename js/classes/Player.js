@@ -5,17 +5,34 @@ class Player extends Sprite {
     imageSrc,
     frameRate,
     scale = 0.5,
+    animations,
   }) {
     super({ imageSrc, frameRate, scale });
     this.position = position;
     this.velocity = { x: 0, y: 0 };
     this.lastKey;
+    this.lastDirection = "right";
     this.floorCollisionBlocks = floorCollisionBlocks;
     this.hitbox = {
       position: { x: this.position.x, y: this.position.y },
       width: 10,
       height: 10,
     };
+    this.animations = animations;
+
+    for (let key in this.animations) {
+      const image = new Image();
+      image.src = this.animations[key].imageSrc;
+
+      this.animations[key].image = image;
+    }
+  }
+
+  switchSprite(key) {
+    if (this.image === this.animations[key].image || !this.loaded) return;
+    this.image = this.animations[key].image;
+    this.frameBuffer = this.animations[key].frameBuffer;
+    this.frameRate = this.animations[key].frameRate;
   }
 
   update() {
@@ -79,8 +96,8 @@ class Player extends Sprite {
   }
 
   applyGravity() {
-    this.position.y += this.velocity.y;
     this.velocity.y += gravity;
+    this.position.y += this.velocity.y;
 
     // canvas border gravity
     // if (this.position.y + this.velocity.y + this.height <= canvas.height) {

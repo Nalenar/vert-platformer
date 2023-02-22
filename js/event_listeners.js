@@ -4,15 +4,17 @@ window.addEventListener("keydown", (event) => {
     case "ф":
       keys.a.pressed = true;
       player.lastKey = "a";
+      player.lastDirection = "left";
       break;
     case "d":
     case "в":
       keys.d.pressed = true;
       player.lastKey = "d";
+      player.lastDirection = "right";
       break;
     case "w":
     case "ц":
-      if (player.velocity.y === 0) player.velocity.y = -10;
+      if (player.velocity.y === 0) player.velocity.y = -4.7;
       break;
   }
 });
