@@ -2,6 +2,7 @@ class Player extends Sprite {
   constructor({
     position,
     floorCollisionBlocks,
+    platformCollisionBlocks,
     imageSrc,
     frameRate,
     scale = 0.5,
@@ -13,6 +14,7 @@ class Player extends Sprite {
     this.lastKey;
     this.lastDirection = "right";
     this.floorCollisionBlocks = floorCollisionBlocks;
+    this.platformCollisionBlocks = platformCollisionBlocks;
     this.hitbox = {
       position: { x: this.position.x, y: this.position.y },
       width: 10,
@@ -30,6 +32,8 @@ class Player extends Sprite {
 
   switchSprite(key) {
     if (this.image === this.animations[key].image || !this.loaded) return;
+
+    this.currentFrame = 0;
     this.image = this.animations[key].image;
     this.frameBuffer = this.animations[key].frameBuffer;
     this.frameRate = this.animations[key].frameRate;
@@ -40,16 +44,17 @@ class Player extends Sprite {
     this.updateHitbox();
 
     // this draws out the image
-    c.fillStyle = "rgba(255, 0, 255, 0.2)";
-    c.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // c.fillStyle = "rgba(255, 0, 255, 0.2)";
+    // c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
-    c.fillStyle = "rgba(0, 0, 255, 0.2)";
-    c.fillRect(
-      this.hitbox.position.x,
-      this.hitbox.position.y,
-      this.hitbox.width,
-      this.hitbox.height
-    );
+    // this draws the hitbox of a player
+    // c.fillStyle = "rgba(0, 0, 255, 0.2)";
+    // c.fillRect(
+    //   this.hitbox.position.x,
+    //   this.hitbox.position.y,
+    //   this.hitbox.width,
+    //   this.hitbox.height
+    // );
 
     this.draw();
 
@@ -126,6 +131,27 @@ class Player extends Sprite {
           const offset = this.hitbox.position.y - this.position.y;
           this.position.y =
             collisionBlock.position.y + collisionBlock.height - offset + 0.02;
+          break;
+        }
+      }
+    }
+
+    // platform collision block
+    for (let i = 0; i < this.platformCollisionBlocks.length; i++) {
+      const platformCollisionBlock = this.platformCollisionBlocks[i];
+
+      if (
+        platformCollision({
+          object1: this.hitbox,
+          object2: platformCollisionBlock,
+        })
+      ) {
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+          this.position.y = platformCollisionBlock.position.y - offset - 0.02;
           break;
         }
       }

@@ -7,7 +7,7 @@ Array.prototype.parse2D = function () {
   return arr;
 };
 
-Array.prototype.createObjectFrom2D = function () {
+Array.prototype.createObjectFrom2D = function (collisionBlockHeight) {
   const arr = [];
 
   this.forEach((row, y) => {
@@ -19,6 +19,7 @@ Array.prototype.createObjectFrom2D = function () {
               x: x * 16,
               y: y * 16,
             },
+            height: collisionBlockHeight,
           })
         );
       }
@@ -32,6 +33,16 @@ function collision({ object1, object2 }) {
   return (
     object1.position.y + object1.height >= object2.position.y &&
     object1.position.y <= object2.position.y + object2.height &&
+    object1.position.x <= object2.position.x + object2.width &&
+    object1.position.x + object1.width >= object2.position.x
+  );
+}
+
+function platformCollision({ object1, object2 }) {
+  return (
+    object1.position.y + object1.height >= object2.position.y &&
+    object1.position.y + object1.height <=
+      object2.position.y + object2.height &&
     object1.position.x <= object2.position.x + object2.width &&
     object1.position.x + object1.width >= object2.position.x
   );

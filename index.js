@@ -11,10 +11,10 @@ const scaledCanvas = {
 
 const gravity = 0.2;
 
-const floorCollisionBlocks = floorCollisions.parse2D().createObjectFrom2D();
+const floorCollisionBlocks = floorCollisions.parse2D().createObjectFrom2D(16);
 const platformCollisionBlocks = platformCollisions
   .parse2D()
-  .createObjectFrom2D();
+  .createObjectFrom2D(4);
 
 const background = new Sprite({
   position: { x: 0, y: 0 },
@@ -24,6 +24,7 @@ const background = new Sprite({
 const player = new Player({
   position: { x: 100, y: 300 },
   floorCollisionBlocks,
+  platformCollisionBlocks,
   imageSrc: "assets/warrior/Idle.png",
   frameRate: 8,
   animations: {
@@ -50,22 +51,22 @@ const player = new Player({
     jump: {
       imageSrc: "assets/warrior/Jump.png",
       frameRate: 2,
-      frameBuffer: 3,
+      frameBuffer: 6,
     },
     jumpLeft: {
       imageSrc: "assets/warrior/JumpLeft.png",
       frameRate: 2,
-      frameBuffer: 3,
+      frameBuffer: 6,
     },
     fall: {
       imageSrc: "assets/warrior/Fall.png",
       frameRate: 2,
-      frameBuffer: 3,
+      frameBuffer: 6,
     },
     fallLeft: {
       imageSrc: "assets/warrior/FallLeft.png",
       frameRate: 2,
-      frameBuffer: 3,
+      frameBuffer: 6,
     },
   },
 });
