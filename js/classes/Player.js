@@ -66,13 +66,13 @@ class Player extends Sprite {
     // );
 
     // this draws the camerabox
-    c.fillStyle = "rgba(0, 255, 0, 0.2)";
-    c.fillRect(
-      this.camerabox.position.x,
-      this.camerabox.position.y,
-      this.camerabox.width,
-      this.camerabox.height
-    );
+    // c.fillStyle = "rgba(0, 255, 0, 0.2)";
+    // c.fillRect(
+    //   this.camerabox.position.x,
+    //   this.camerabox.position.y,
+    //   this.camerabox.width,
+    //   this.camerabox.height
+    // );
 
     this.draw();
 
@@ -115,6 +115,34 @@ class Player extends Sprite {
 
     if (cameraboxLeftSide <= Math.abs(camera.position.x)) {
       camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraDown({ scaledCanvas, camera }) {
+    if (this.camerabox.position.y + this.velocity.y <= 0) return;
+
+    const cameraboxTopSide = this.camerabox.position.y;
+
+    if (cameraboxTopSide <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
+  shouldPanCameraUp({ scaledCanvas, camera }) {
+    if (
+      this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
+      432
+    )
+      return;
+
+    const cameraboxBottomSide =
+      this.camerabox.position.y + this.camerabox.height;
+
+    if (
+      cameraboxBottomSide >=
+      Math.abs(camera.position.y) + scaledCanvas.height
+    ) {
+      camera.position.y -= this.velocity.y;
     }
   }
 

@@ -12,7 +12,7 @@ window.addEventListener("keydown", (event) => {
       break;
     case "w":
     case "ц":
-      if (player.velocity.y === 0) player.velocity.y = -4.7;
+      if (player.velocity.y === 0) player.velocity.y = -3.3;
       break;
   }
 });

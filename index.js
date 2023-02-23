@@ -9,7 +9,7 @@ const scaledCanvas = {
   height: canvas.height / 4,
 };
 
-const gravity = 0.2;
+const gravity = 0.1;
 
 const floorCollisionBlocks = floorCollisions.parse2D().createObjectFrom2D(16);
 const platformCollisionBlocks = platformCollisions
@@ -80,10 +80,12 @@ const keys = {
   },
 };
 
+const backgroundImageHeight = 432;
+
 const camera = {
   position: {
     x: 0,
-    y: 0,
+    y: -backgroundImageHeight + scaledCanvas.height,
   },
 };
 
@@ -95,17 +97,14 @@ function animate() {
   c.save();
 
   c.scale(4, 4);
-  c.translate(
-    camera.position.x,
-    -background.image.height + scaledCanvas.height
-  );
+  c.translate(camera.position.x, camera.position.y);
   background.update();
-  floorCollisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.update();
-  });
-  platformCollisionBlocks.forEach((collisionBlock) => {
-    collisionBlock.update();
-  });
+  // floorCollisionBlocks.forEach((collisionBlock) => {
+  //   collisionBlock.draw();
+  // });
+  // platformCollisionBlocks.forEach((collisionBlock) => {
+  //   collisionBlock.draw();
+  // });
   player.checkForHorizontalCanvasCollisions();
   player.update();
 
@@ -126,9 +125,12 @@ function animate() {
   }
 
   if (player.velocity.y < 0) {
-    if (player.lastDirection === "right") player.switchSprite("jump");
-    else player.switchSprite("jumpLeft");
+    player.shouldPanCameraDown({ scaledCanvas, camera });
+    if (player.lastDirection === "right") {
+      player.switchSprite("jump");
+    } else player.switchSprite("jumpLeft");
   } else if (player.velocity.y > 0) {
+    player.shouldPanCameraUp({ scaledCanvas, camera });
     if (player.lastDirection === "right") player.switchSprite("fall");
     else player.switchSprite("fallLeft");
   }
