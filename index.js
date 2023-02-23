@@ -80,14 +80,25 @@ const keys = {
   },
 };
 
+const camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "black";
   c.fillRect(0, 0, canvas.width, canvas.height);
 
   c.save();
+
   c.scale(4, 4);
-  c.translate(0, -background.image.height + scaledCanvas.height);
+  c.translate(
+    camera.position.x,
+    -background.image.height + scaledCanvas.height
+  );
   background.update();
   floorCollisionBlocks.forEach((collisionBlock) => {
     collisionBlock.update();
@@ -95,16 +106,20 @@ function animate() {
   platformCollisionBlocks.forEach((collisionBlock) => {
     collisionBlock.update();
   });
+  player.checkForHorizontalCanvasCollisions();
   player.update();
-  c.restore();
 
   player.velocity.x = 0;
   if (keys.a.pressed && player.lastKey === "a") {
     player.switchSprite("runLeft");
     player.velocity.x = -2;
+    player.lastDirection = "left";
+    player.shouldPanCameraToTheRight({ scaledCanvas, camera });
   } else if (keys.d.pressed && player.lastKey === "d") {
     player.switchSprite("run");
     player.velocity.x = 2;
+    player.lastDirection = "right";
+    player.shouldPanCameraToTheLeft({ scaledCanvas, camera });
   } else if (player.velocity.y === 0) {
     if (player.lastDirection === "right") player.switchSprite("idle");
     else player.switchSprite("idleLeft");
@@ -117,6 +132,8 @@ function animate() {
     if (player.lastDirection === "right") player.switchSprite("fall");
     else player.switchSprite("fallLeft");
   }
+
+  c.restore();
 }
 
 animate();

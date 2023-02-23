@@ -28,6 +28,14 @@ class Player extends Sprite {
 
       this.animations[key].image = image;
     }
+    this.camerabox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
   }
 
   switchSprite(key) {
@@ -42,8 +50,9 @@ class Player extends Sprite {
   update() {
     this.updateFrames();
     this.updateHitbox();
+    this.updateCamerabox();
 
-    // this draws out the image
+    // this draws out the real player box
     // c.fillStyle = "rgba(255, 0, 255, 0.2)";
     // c.fillRect(this.position.x, this.position.y, this.width, this.height);
 
@@ -56,6 +65,15 @@ class Player extends Sprite {
     //   this.hitbox.height
     // );
 
+    // this draws the camerabox
+    c.fillStyle = "rgba(0, 255, 0, 0.2)";
+    c.fillRect(
+      this.camerabox.position.x,
+      this.camerabox.position.y,
+      this.camerabox.width,
+      this.camerabox.height
+    );
+
     this.draw();
 
     this.position.x += this.velocity.x;
@@ -66,12 +84,55 @@ class Player extends Sprite {
     this.checkForVerticalCollisions();
   }
 
+  updateCamerabox() {
+    this.camerabox = {
+      position: {
+        x: this.position.x - 58,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
+  }
+
+  shouldPanCameraToTheLeft({ scaledCanvas, camera }) {
+    const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width;
+
+    if (cameraboxRightSide >= 576) return;
+
+    if (
+      cameraboxRightSide >=
+      scaledCanvas.width + Math.abs(camera.position.x)
+    ) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraToTheRight({ scaledCanvas, camera }) {
+    if (this.camerabox.position.x <= 0) return;
+
+    const cameraboxLeftSide = this.camerabox.position.x;
+
+    if (cameraboxLeftSide <= Math.abs(camera.position.x)) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
   updateHitbox() {
     this.hitbox = {
       position: { x: this.position.x + 35, y: this.position.y + 26 },
       width: 13,
       height: 27,
     };
+  }
+
+  checkForHorizontalCanvasCollisions() {
+    if (
+      this.hitbox.position.x + this.hitbox.width + this.velocity.x >= 576 ||
+      this.hitbox.position.x + this.velocity.x <= 0
+    ) {
+      this.velocity.x = 0;
+    }
   }
 
   checkForHorizontalCollisions() {
